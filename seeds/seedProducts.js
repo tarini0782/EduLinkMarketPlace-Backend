@@ -149,7 +149,8 @@ const sampleProducts = [
  */
 const seedDB = async () => {
   try {
-    await mongoose.connect(process.env.MONGODB_URI);
+    require("dotenv").config({ path: require("path").join(__dirname, "..", ".env") });
+    await mongoose.connect(process.env.MONGO_URI);
     console.log("Connected to MongoDB");
 
     // Clear all existing products from the database
