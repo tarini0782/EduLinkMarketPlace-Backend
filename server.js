@@ -40,11 +40,13 @@ const startServer = async () => {
   const User = require("./models/User");
 
   const productCount = await Product.countDocuments();
-  if (productCount === 0) {
-    console.log("Empty database detected - seeding sample products...");
+  const availableCount = await Product.countDocuments({ isAvailable: true });
+  if (productCount === 0 || availableCount === 0) {
+    console.log("No available products detected - seeding sample products...");
+    if (productCount > 0) await Product.deleteMany({});
     const { sampleProducts } = require("./seeds/seedProducts");
     await Product.insertMany(sampleProducts);
-    console.log("Database seeded with sample products!");
+    console.log(`Database seeded with ${sampleProducts.length} sample products!`);
   }
 
   // Seed default admin if none exists
