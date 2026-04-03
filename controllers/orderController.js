@@ -221,4 +221,38 @@ const processPayment = async (req, res) => {
   }
 };
 
-module.exports = { buyNow, checkout, getOrders, getOrderById, processPayment };
+/**
+ * PUT /api/orders/:orderId/cancel
+ * Cancel an order. Only allowed if the order hasn't been paid yet.
+ */
+const cancelOrder = async (req, res) => {
+  try {
+    const { orderId } = req.params;
+
+    const order = await Order.findById(orderId);
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+
+    if (order.status === "Cancelled") {
+      return res.status(400).json({ message: "Order is already cancelled" });
+    }
+
+    if (order.paymentStatus === "paid") {
+      return res.status(400).json({ message: "Cannot cancel a paid order" });
+    }
+
+    order.status = "Cancelled";
+    order.paymentStatus = "failed";
+    await order.save();
+
+    res.json({
+      message: "Order cancelled successfully",
+      order,
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to cancel order", error: error.message });
+  }
+};
+
+module.exports = { buyNow, checkout, getOrders, getOrderById, processPayment, cancelOrder };

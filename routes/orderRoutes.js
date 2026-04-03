@@ -21,12 +21,14 @@ const {
   getOrders,
   getOrderById,
   processPayment,
+  cancelOrder,
 } = require("../controllers/orderController");
 
 // Define routes
 router.post("/buy-now", buyNow);
 router.post("/checkout", checkout);
 router.post("/:orderId/pay", processPayment);
+router.put("/:orderId/cancel", cancelOrder);
 router.get("/detail/:orderId", getOrderById);
 router.get("/:userId", getOrders);
 
