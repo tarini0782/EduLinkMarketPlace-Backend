@@ -151,6 +151,7 @@ NODE_ENV=development
 | GET | `/:userId` | No | Get all orders for a user |
 | GET | `/detail/:orderId` | No | Get a single order's full details |
 | POST | `/:orderId/pay` | No | Process payment — updates order status to "Confirmed" / "paid" and deducts stock (Sahlaan) |
+| PUT | `/:orderId/cancel` | No | Cancel an unpaid order — sets status to "Cancelled" and paymentStatus to "failed" |
 
 ### Admin (`/api/admin`) — All require JWT + admin role
 
