@@ -29,10 +29,13 @@ const getCart = async (req, res) => {
       return sum;
     }, 0);
 
+    const itemCount = cart.items.reduce((sum, item) => sum + item.quantity, 0);
+
     res.json({
       userId: cart.userId,
       items: cart.items,
       totalAmount: Math.round(totalAmount * 100) / 100,
+      itemCount,
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to get cart", error: error.message });
