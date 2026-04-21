@@ -63,6 +63,18 @@ const getProductById = async (req, res) => {
  */
 const createProduct = async (req, res) => {
   try {
+    const { name, description, price, category, stock } = req.body;
+
+    if (!name || !description || !category) {
+      return res.status(400).json({ message: "Name, description, and category are required" });
+    }
+    if (!price || Number(price) <= 0) {
+      return res.status(400).json({ message: "Price must be greater than 0" });
+    }
+    if (stock !== undefined && Number(stock) < 1) {
+      return res.status(400).json({ message: "Stock quantity must be at least 1" });
+    }
+
     const productData = {
       ...req.body,
       sellerId: req.user._id.toString(),
