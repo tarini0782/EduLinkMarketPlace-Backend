@@ -128,9 +128,19 @@ const checkout = async (req, res) => {
     cart.items = [];
     await cart.save();
 
+    // Warn if any item in the order has low remaining stock (≤ 3)
+    const lowStockWarnings = [];
+    for (const item of orderItems) {
+      const product = await Product.findById(item.product);
+      if (product && product.stock <= 3 && product.stock > 0) {
+        lowStockWarnings.push(`"${product.name}" only has ${product.stock} left in stock`);
+      }
+    }
+
     res.status(201).json({
       message: "Checkout successful! Order placed.",
       order,
+      warnings: lowStockWarnings.length > 0 ? lowStockWarnings : undefined,
     });
   } catch (error) {
     res.status(500).json({ message: "Failed to checkout", error: error.message });
